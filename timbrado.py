@@ -4,22 +4,25 @@ import zeep
 
 #parametros para conexion al Webservice (URL de Pruebas)
 wsdl_url = "https://staging.ws.timbox.com.mx/timbrado/wsdl"
-wsdl_username = "user_name"
-wsdl_password = "password"
+wsdl_usuario = "user_name"
+wsdl_contrasena = "password"
+ruta_xml = "ruta/del/archivo.xml"
 
 #convertir la cadena del xml en base64
-xml_base64 = base64.b64encode(cadena_xml)
+documento_xml = open(ruta_xml, "rb").read()
+xml_base64 = base64.b64encode(documento_xml)
 
-#crear un cliente de savon para hacer la petición al WS
-client = zeep.Client(wsdl=wsdl_url)
+#crear un cliente para hacer la petición al WS.
+cliente = zeep.Client(wsdl=wsdl_url)
 
-#llamar el metodo timbrar_cfdi
 try:
-    response = client.service.timbrar_cfdi(wsdl_username, wsdl_password, xml_base64)
-    print(response)
+  #llamar el metodo timbrar_cfdi
+  respuesta = cliente.service.timbrar_cfdi(wsdl_usuario, wsdl_contrasena, xml_base64)
+  print(respuesta)
 except Exception as exception:
-    print("Code: %s" % exception.code)
-    print("Message: %s" % exception.message)
-    print("Actor: %s" % exception.actor)
-    print("Detail: %s" % exception.detail)
+  #Imprimir los datos de la excepcion
+  print("Code: %s" % exception.code)
+  print("Message: %s" % exception.message)
+  print("Actor: %s" % exception.actor)
+  print("Detail: %s" % exception.detail)
 

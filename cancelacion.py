@@ -15,15 +15,16 @@ bin_file = open(pfx_path, "rb").read()
 pfx_base64 = base64.b64encode(bin_file)
 pfx_password = "12345678a"
 
-#crear un cliente de savon para hacer la petición al WS, en produccion quitar el "log: true"
+#crear un cliente para hacer la petición al WS.
 client = zeep.Client(wsdl=wsdl_url)
 
-#llamar el metodo cancelar_cfdi
 try:
-    response = client.service.cancelar_cfdi(wsdl_username, wsdl_password, rfc, uuid, pfx_base64, pfx_password)
-    print(response)
+  #llamar el metodo cancelar_cfdi
+  response = client.service.cancelar_cfdi(wsdl_username, wsdl_password, rfc, uuid, pfx_base64, pfx_password)
+  print(response)
 except Exception as exception:
-    print("Code: %s" % exception.code)
-    print("Message: %s" % exception.message)
-    print("Actor: %s" % exception.actor)
-    print("Detail: %s" % exception.detail)
+  #Imprimir los datos de la excepcion
+  print("Code: %s" % exception.code)
+  print("Message: %s" % exception.message)
+  print("Actor: %s" % exception.actor)
+  print("Detail: %s" % exception.detail)

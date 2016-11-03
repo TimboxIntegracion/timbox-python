@@ -22,8 +22,8 @@ pip install zeep
 ##Timbrar CFDI
 Para hacer una petición de timbrado de un CFDI, deberá enviar las credenciales asignadas, asi como el xml que desea timbrar convertido a una cadena en base64:
 ```
-cadena_xml = open("path_xml/example.xml", "rb").read()
-xml_base64 = base64.b64encode(cadena_xml)
+documento_xml = open(ruta_xml, "rb").read()
+xml_base64 = base64.b64encode(documento_xml)
 ```
 Con la libreria de zeep crear un cliente y hacer el llamado al método timbrar_cfdi enviándole los parametros con la información necesaria:
 
