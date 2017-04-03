@@ -2,29 +2,27 @@
 import base64
 import zeep
 
-#parametros para la conexión al Webservice
+# Parametros para la conexión al Webservice
 wsdl_url = "https://staging.ws.timbox.com.mx/timbrado/wsdl"
-wsdl_username = "user_name"
-wsdl_password = "password"
+usuario = "AAA010101000"
+contrasena = "h6584D56fVdBbSmmnB"
 
-#parametros para la cancelación del CFDI
-rfc = "IAD121214B34"
-uuid = "A7A812CC-3B51-4623-A219-8F4173D061FE"
-pfx_path = 'path_del_archivo/iad121214b34.pfx'
+# Parametros para la cancelación del CFDI
+rfc = "AAA010101AAA"
+uuids = { "uuid": ["E28DBCF2-F852-4B2F-8198-CD8383891EB0", "3CFF7200-0DE5-4BEE-AC22-AA2A49052FBC", "51408B33-FE29-47DA-9517-FBF420240FD3"] }
+# uuid = "E28DBCF2-F852-4B2F-8198-CD8383891EB0"
+pfx_path = "archivoPfx.pfx"
 bin_file = open(pfx_path, "rb").read()
 pfx_base64 = base64.b64encode(bin_file)
-pfx_password = "12345678a"
+pfx_contrasena = "12345678a"
 
-#crear un cliente para hacer la petición al WS.
-client = zeep.Client(wsdl=wsdl_url)
+# Crear un cliente para hacer la petición al WS.
+cliente = zeep.Client(wsdl = wsdl_url)
 
 try:
-  #llamar el metodo cancelar_cfdi
-  response = client.service.cancelar_cfdi(wsdl_username, wsdl_password, rfc, uuid, pfx_base64, pfx_password)
-  print(response)
+  # Llamar el metodo cancelar_cfdi
+  respuesta = cliente.service.cancelar_cfdi(usuario, contrasena, rfc, uuids, pfx_base64, pfx_contrasena)
+  print(respuesta)
 except Exception as exception:
-  #Imprimir los datos de la excepcion
-  print("Code: %s" % exception.code)
-  print("Message: %s" % exception.message)
-  print("Actor: %s" % exception.actor)
-  print("Detail: %s" % exception.detail)
+  # Imprimir los datos de la excepcion
+  print("Message: %s" % exception)
