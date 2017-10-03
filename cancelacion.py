@@ -3,7 +3,7 @@ import base64
 import zeep
 
 # Parametros para la conexión al Webservice
-wsdl_url = "https://staging.ws.timbox.com.mx/timbrado/wsdl"
+wsdl_url = "https://staging.ws.timbox.com.mx/timbrado_cfdi33/wsdl"
 usuario = "AAA010101000"
 contrasena = "h6584D56fVdBbSmmnB"
 
