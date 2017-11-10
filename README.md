@@ -20,18 +20,26 @@ pip install zeep
 ```
 
 ## Timbrar CFDI
+### Generacion de Sello
+Para generar el sello se necesita: la llave privada (.key) en formato PEM. También es necesario incluir el XSLT del SAT para obtener transformar el XML a la cadena original.
+
+De la cadena original se obtiene el digest y luego se utiliza el digest y la llave privada para obtener el sello. Todo esto se realiza utilizando la libreria M2Crypto, que debe ser instalada con pip.
+
+Finalmente el sello es actualizado en el archivo XML para que pueda ser timbrado. Esto se logra mandando llamar el método de actualizarSello:
+```
+generar_sello(comprobante, path_llave, password_llave);
+```
+### Timbrado
 Para hacer una petición de timbrado de un CFDI, deberá enviar las credenciales asignadas, asi como el xml que desea timbrar convertido a una cadena en base64:
 ```
-# coding=utf-8
-import base64
-import zeep
-
 # Parametros para conexion al Webservice (URL de Pruebas)
 wsdl_url = "https://staging.ws.timbox.com.mx/timbrado_cfdi33/wsdl"
 usuario = "AAA010101000"
 contrasena = "h6584D56fVdBbSmmnB"
-ruta_xml = "archivoXml.xml"
+ruta_xml = "ejemplo_cfdi_33.xml"
 
+#Actualizar Sello
+actualizar_sello(ruta_xml)
 # Convertir la cadena del xml en base64
 documento_xml = open(ruta_xml, "rb").read()
 xml_base64 = base64.b64encode(documento_xml)
