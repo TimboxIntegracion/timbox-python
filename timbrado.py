@@ -9,9 +9,8 @@ from lxml import etree as ET
 import hashlib
 
 
-def actualizar_sello( nombre_archivo, llave_pem ):
+def generar_sello( nombre_archivo, llave_pem ):
 	#Obtener fecha y actualizarla en xml
-	print('Actualizando fecha...')
 	DOMTree = xml.dom.minidom.parse(nombre_archivo)
 	fecha = strftime("%Y-%m-%dT%H:%M:%S")
 	DOMTree.documentElement.setAttribute("Fecha", fecha)
@@ -20,7 +19,6 @@ def actualizar_sello( nombre_archivo, llave_pem ):
 	file.close()
 
 	#Obtener cadena original
-	print('Construyendo cadena original...')
 	file = open(nombre_archivo, 'r')
 	comprobante = file.read()
 	file.close()
@@ -29,18 +27,16 @@ def actualizar_sello( nombre_archivo, llave_pem ):
 	xsl = ET.XSLT(xsl_root)
 	cadena_original = xsl(xdoc)
 
-	#Generar digestion y apartir de ella el sello
-	print('Generando digestion...')
+	#Generar digestion y usarla para generar el sello
 	keys = RSA.load_key(llave_pem)
 	digest = hashlib.new('sha256', str(cadena_original).encode()).digest()
 	sello = base64.b64encode(keys.sign(digest, "sha256"))
 
 	#Actualizar sello en xml
-	print('Actualizando sello...')
-	DOMTree2 = xml.dom.minidom.parse(nombre_archivo)
-	DOMTree2.documentElement.setAttribute("Sello", sello.decode())
+	DOMTree = xml.dom.minidom.parse(nombre_archivo)
+	DOMTree.documentElement.setAttribute("Sello", sello.decode())
 	file2 = open(nombre_archivo, 'w')
-	file2.write(DOMTree2.toxml())
+	file2.write(DOMTree.toxml())
 	file2.close()
 
 	pass
@@ -52,8 +48,8 @@ contrasena = "h6584D56fVdBbSmmnB"
 ruta_xml = "ejemplo_cfdi_33.xml"
 llave_pem = "CSD01_AAA010101AAA.key.pem"
 
-#Actualizar Sello
-actualizar_sello(ruta_xml, llave_pem)
+#Generar sello Sello
+generar_sello(ruta_xml, llave_pem)
 # Convertir la cadena del xml en base64
 documento_xml = open(ruta_xml, "rb").read()
 xml_base64 = base64.b64encode(documento_xml)
