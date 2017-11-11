@@ -7,25 +7,38 @@ Se deberá hacer uso de las URL que hacen referencia al WSDL, en cada petición 
 
 - [Timbox Producción](https://sistema.timbox.com.mx/timbrado_cfdi33/wsdl)
 
-Para integrar el Webservice al proyecto se requiere hacer uso del modulo Base64:
+Para integrar el Webservice al proyecto se requiere hacer uso de varias librerias como xml.dom.minidom, base64, zeep(para hacer peticiones soap), M2Crypto(para criptografia), time, lxml, haslib:
 
 ```
 import base64
+...
+from M2Crypto import RSA
 ```
-
-También se requiere instalar la libreria de [zeep](https://github.com/mvantellingen/python-zeep):
-
+Estas librerias se pueden instalar por medio de pip:
 ```
 pip install zeep
 ```
+Si está utilizando python3 y tiene errores al instalar M2Crypto, puede seguir los siguientes pasos:
+- Instalar prerequisitos
+```
+sudo apt-get install build-essential python3-dev python-dev libssl-dev swig
+```
+- Clonar proyecto e instalar, para mayor información puede consultar el archivo 'INSTALL.rst'
+```
+git clone https://gitlab.com/m2crypto/m2crypto/tree/python3/
+cd m2crypto-<version>
+sudo python3 setup.py build
+sudo python3 setup.py install
+```
 
 ## Timbrar CFDI
-### Generacion de Sello
-Para generar el sello se necesita: la llave privada (.key) en formato PEM. También es necesario incluir el XSLT del SAT para obtener transformar el XML a la cadena original.
+### Generación de Sello
+Para generar el sello se necesita: la llave privada (.key) en formato PEM. También es necesario incluir el XSLT del SAT para poder transformar el XML y obtener la cadena original.
 
-De la cadena original se obtiene el digest y luego se utiliza el digest y la llave privada para obtener el sello. Todo esto se realiza utilizando la libreria M2Crypto, que debe ser instalada con pip.
+La cadena original se utiliza para obtener el digeset, usando las funciones de la librería de criptografía, luego se utiliza el digest y la llave privada para obtener el sello. Todo esto se realiza utilizando la libreria M2Crypto y hashlib.
 
-Finalmente el sello es actualizado en el archivo XML para que pueda ser timbrado. Esto se logra mandando llamar el método de actualizarSello:
+Una vez generado el sello, se actualiza en el XML para que este sea codificado y enviado al servicio de timbrado.
+Esto se logra mandando llamar el método de actualizarSello:
 ```
 generar_sello(comprobante, path_llave, password_llave);
 ```
