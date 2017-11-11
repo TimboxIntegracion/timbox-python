@@ -7,14 +7,14 @@ Se deberá hacer uso de las URL que hacen referencia al WSDL, en cada petición 
 
 - [Timbox Producción](https://sistema.timbox.com.mx/timbrado_cfdi33/wsdl)
 
-Para integrar el Webservice al proyecto se requiere hacer uso de varias librerias como xml.dom.minidom, base64, zeep(para hacer peticiones soap), M2Crypto(para criptografia), time, lxml, haslib:
+Para integrar el Webservice al proyecto se requiere hacer uso de varias librerías como base64 y zeep(para hacer peticiones soap). Para poder generar el sello se necesitarán de las librerías: xml.dom.minidom, M2Crypto(para criptografia), time, lxml, haslib:
 
 ```
 import base64
 ...
 from M2Crypto import RSA
 ```
-Estas librerias se pueden instalar por medio de pip:
+Estas librerías se pueden instalar por medio de pip:
 ```
 pip install zeep
 ```
@@ -23,7 +23,7 @@ Si está utilizando python3 y tiene errores al instalar M2Crypto, puede seguir l
 ```
 sudo apt-get install build-essential python3-dev python-dev libssl-dev swig
 ```
-- Clonar proyecto e instalar, para mayor información puede consultar el archivo 'INSTALL.rst'
+- Clonar proyecto e instalar, para mayor información puede consultar el archivo 'INSTALL.rst' (dentro del repositorio de M2Crypto)
 ```
 git clone https://gitlab.com/m2crypto/m2crypto/tree/python3/
 cd m2crypto-<version>
@@ -35,10 +35,10 @@ sudo python3 setup.py install
 ### Generación de Sello
 Para generar el sello se necesita: la llave privada (.key) en formato PEM. También es necesario incluir el XSLT del SAT para poder transformar el XML y obtener la cadena original.
 
-La cadena original se utiliza para obtener el digeset, usando las funciones de la librería de criptografía, luego se utiliza el digest y la llave privada para obtener el sello. Todo esto se realiza utilizando la libreria M2Crypto y hashlib.
+La cadena original se utiliza para obtener el digest, usando las funciones de la librería de criptografía, luego se utiliza el digest y la llave privada para obtener el sello. Todo esto se realiza utilizando la libreria M2Crypto y hashlib.
 
 Una vez generado el sello, se actualiza en el XML para que este sea codificado y enviado al servicio de timbrado.
-Esto se logra mandando llamar el método de actualizarSello:
+Esto se logra mandando llamar el método de generar_sello:
 ```
 generar_sello(comprobante, path_llave, password_llave);
 ```
