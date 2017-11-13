@@ -23,17 +23,17 @@ Si está utilizando python3 y tiene errores al instalar M2Crypto, puede seguir l
 ```
 sudo apt-get install build-essential python3-dev python-dev libssl-dev swig
 ```
-- Clonar proyecto e instalar, para mayor información puede consultar el archivo 'INSTALL.rst' (dentro del repositorio de M2Crypto)
+- Clonar proyecto e instalar: 
 ```
 git clone https://gitlab.com/m2crypto/m2crypto/tree/python3/
 cd m2crypto-<version>
 sudo python3 setup.py build
 sudo python3 setup.py install
 ```
-
+Para mayor información puede consultar el archivo 'INSTALL.rst' (dentro del repositorio de M2Crypto)
 ## Timbrar CFDI
 ### Generación de Sello
-Para generar el sello se necesita: la llave privada (.key) en formato PEM. También es necesario incluir el XSLT del SAT para poder transformar el XML y obtener la cadena original.
+Para generar el sello se necesita: la llave privada (.key) en formato PEM y el XSLT del SAT (cadenaoriginal_3_3.xslt).El XSLT del SAT se utiliza para poder transformar el XML y obtener la cadena original.
 
 La cadena original se utiliza para obtener el digest, usando las funciones de la librería de criptografía, luego se utiliza el digest y la llave privada para obtener el sello. Todo esto se realiza utilizando la libreria M2Crypto y hashlib.
 
