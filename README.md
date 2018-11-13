@@ -3,11 +3,18 @@ Ejemplo con la integración al Webservice de Timbox
 
 Se deberá hacer uso de las URL que hacen referencia al WSDL, en cada petición realizada:
 
+Webservice de Timbrado:
 - [Timbox Pruebas](https://staging.ws.timbox.com.mx/timbrado_cfdi33/wsdl)
 
 - [Timbox Producción](https://sistema.timbox.com.mx/timbrado_cfdi33/wsdl)
 
-Para integrar el Webservice al proyecto se requiere hacer uso de varias librerías como base64 y zeep(para hacer peticiones soap). Para poder generar el sello se necesitarán de las librerías: xml.dom.minidom, M2Crypto(para criptografia), time, lxml, haslib:
+Webservice de Cancelación:
+
+- [Timbox Pruebas](https://staging.ws.timbox.com.mx/cancelacion/wsdl)
+
+- [Timbox Producción](https://sistema.timbox.com.mx/cancelacion/wsdl)
+
+Para integrar el Webservice al proyecto se requiere hacer uso de varias librerías como base64 y zeep(para hacer peticiones soap). Para poder generar el sello se necesitarán de las librerías: xml.dom.minidom, [M2Crypto](https://gitlab.com/m2crypto/m2crypto)  (para criptografia), time, lxml, haslib:
 
 ```
 import base64
@@ -25,7 +32,7 @@ sudo apt-get install build-essential python3-dev python-dev libssl-dev swig
 ```
 - Clonar proyecto e instalar: 
 ```
-git clone https://gitlab.com/m2crypto/m2crypto/tree/python3/
+git clone https://gitlab.com/m2crypto/m2crypto.git
 cd m2crypto-<version>
 sudo python3 setup.py build
 sudo python3 setup.py install
@@ -78,35 +85,157 @@ response = client.service.timbrar_cfdi(wsdl_username, wsdl_password, xml_base64)
 ```
 
 ## Cancelar CFDI
-Para la cancelación son necesarias las credenciales asignadas, RFC del emisor, un arreglo de UUIDs, el archivo PFX convertido a cadena en base64 y el password del archivo PFX:
+Para la cancelación son necesarios el certificado y llave, en formato pem que corresponde al emisor del comprobante:
 ```
-# coding=utf-8
-import base64
+file_cer_pem = open("CSD01_AAA010101AAA.cer.pem", "r").read()
+file_key_pem = open("CSD01_AAA010101AAA.key.pem", "r").read()
+```
+Con la libreria de zeep crear un cliente y hacer el llamado al método cancelar_cfdi enviándole los parametros con la información necesaria:
+```
 import zeep
 
 # Parametros para la conexión al Webservice
-wsdl_url = "https://staging.ws.timbox.com.mx/timbrado_cfdi33/wsdll"
+wsdl_url = "https://staging.ws.timbox.com.mx/cancelacion/wsdl"
 usuario = "AAA010101000"
 contrasena = "h6584D56fVdBbSmmnB"
 
 # Parametros para la cancelación del CFDI
-rfc = "AAA010101AAA"
-uuids = { "uuid": ["E28DBCF2-F852-4B2F-8198-CD8383891EB0", "3CFF7200-0DE5-4BEE-AC22-AA2A49052FBC", "51408B33-FE29-47DA-9517-FBF420240FD3"] }
-# uuid = "E28DBCF2-F852-4B2F-8198-CD8383891EB0"
-pfx_path = "archivoPfx.pfx"
-bin_file = open(pfx_path, "rb").read()
-pfx_base64 = base64.b64encode(bin_file)
-pfx_contrasena = "12345678a"
+rfc_emisor   = "AAA010101AAA"
+rfc_receptor = "IAD121214B34"
+uuid = "66C2B0C5-B67C-4EF8-8D2E-E6625361B059"
+total = "7261.60"
+
+file_cer_pem = open("CSD01_AAA010101AAA.cer.pem", "r").read()
+file_key_pem = open("CSD01_AAA010101AAA.key.pem", "r").read()
+
+folios = {
+"folio": {
+	"uuid" : uuid, 
+	"rfc_receptor": rfc_receptor, 
+	"total": total
+	} 
+}
 
 # Crear un cliente para hacer la petición al WS.
 cliente = zeep.Client(wsdl = wsdl_url)
 
 try:
   # Llamar el metodo cancelar_cfdi
-  respuesta = cliente.service.cancelar_cfdi(usuario, contrasena, rfc, uuids, pfx_base64, pfx_contrasena)
+  respuesta = cliente.service.cancelar_cfdi(usuario, contrasena, rfc_emisor, folios, file_cer_pem, file_key_pem)
   print(respuesta)
 except Exception as exception:
   # Imprimir los datos de la excepcion
   print("Message: %s" % exception)
+
+```
+## Consultar Estatus CFDI
+Para la consulta de estatus de CFDI solo es necesario generar la petición de consulta, Crear un cliente y hacer el llamado al método consultar_estatus enviándole los parametros con la información necesaria:
+```
+import zeep
+
+# Parametros para la conexión al Webservice
+wsdl_url = "https://staging.ws.timbox.com.mx/cancelacion/wsdl"
+usuario = "AAA010101000"
+contrasena = "h6584D56fVdBbSmmnB"
+
+# Parametros para la consulta de estatus de un CFDI
+rfc_emisor   = "AAA010101AAA"
+rfc_receptor = "IAD121214B34"
+uuid = "66C2B0C5-B67C-4EF8-8D2E-E6625361B059"
+total = "7261.60"
+
+# Crear un cliente para hacer la petición al WS.
+cliente = zeep.Client(wsdl = wsdl_url)
+
+try:
+  # Llamar el metodo consultar_estatus
+  respuesta = cliente.service.consultar_estatus(usuario, contrasena, uuid, rfc_emisor, rfc_receptor, total)
+  print(respuesta)
+except Exception as exception:
+  # Imprimir los datos de la excepcion
+  print("Message: %s" % exception)
+
+```
+
+## Consultar Peticiones Pendientes
+Para la consulta de peticiones pendientes son necesarios el certificado y llave, en formato pem que corresponde al receptor del comprobante:
+```
+file_cer_pem = open("CSD01_AAA010101AAA.cer.pem", "r").read()
+file_key_pem = open("CSD01_AAA010101AAA.key.pem", "r").read()
+```
+Con la libreria de zeep crear un cliente y hacer el llamado al método consultar_peticiones_pendientes enviándole los parametros con la información necesaria:
+```
+import zeep
+
+# Parametros para la conexión al Webservice
+wsdl_url = "https://staging.ws.timbox.com.mx/cancelacion/wsdl"
+usuario = "AAA010101000"
+contrasena = "h6584D56fVdBbSmmnB"
+
+# Parametros para la consulta de peticiones pendientes
+rfc_receptor = "AAA010101AAA"
+file_cer_pem = open("CSD01_AAA010101AAA.cer.pem", "r").read()
+file_key_pem = open("CSD01_AAA010101AAA.key.pem", "r").read()
+
+
+# Crear un cliente para hacer la petición al WS.
+cliente = zeep.Client(wsdl = wsdl_url)
+
+try:
+  # Llamar el metodo consultar_peticiones_pendientes
+  respuesta = cliente.service.consultar_peticiones_pendientes(usuario, contrasena, rfc_receptor, file_cer_pem, file_key_pem)
+  print(respuesta)
+except Exception as exception:
+  # Imprimir los datos de la excepcion
+  print("Message: %s" % exception)
+```
+
+## Procesar Respuesta
+Para realizar la petición de aceptación/rechazo de la solicitud de cancelación son necesarios el certificado y llave, en formato pem que corresponde al receptor del comprobante:
+```
+file_cer_pem = open("CSD01_AAA010101AAA.cer.pem", "r").read()
+file_key_pem = open("CSD01_AAA010101AAA.key.pem", "r").read()
+```
+Con la libreria de zeep crear un cliente y hacer el llamado al método procesar_respuesta enviándole los parametros con la información necesaria:
+```
+import zeep
+
+# Parametros para la conexión al Webservice
+wsdl_url = "https://staging.ws.timbox.com.mx/cancelacion/wsdl"
+usuario = "AAA010101000"
+contrasena = "h6584D56fVdBbSmmnB"
+
+# Parametros para la procesar respuesta
+rfc_emisor   = "AAA010101AAA"
+rfc_receptor = "AAA010101AAA"
+uuid = "66C2B0C5-B67C-4EF8-8D2E-E6625361B059"
+total = "7261.60"
+
+file_cer_pem = open("CSD01_AAA010101AAA.cer.pem", "r").read()
+file_key_pem = open("CSD01_AAA010101AAA.key.pem", "r").read()
+
+# A(Aceptar la solicitud), R(Rechazar la solicitud)
+respuesta_solicitud = 'A'
+
+respuestas = {
+"folios_respuestas": {
+	"uuid" : uuid, 
+	"rfc_emisor" : rfc_emisor, 
+	"total" : total,
+	"respuesta" : respuesta_solicitud
+	} 
+}
+
+
+# Crear un cliente para hacer la petición al WS.
+cliente = zeep.Client(wsdl = wsdl_url)
+print(cliente)
+try:
+  # Llamar el metodo procesar_respuesta
+  respuesta = cliente.service.procesar_respuesta(usuario, contrasena, rfc_receptor, respuestas, file_cer_pem, file_key_pem)
+  print(respuesta)
+except Exception as exception:
+  # Imprimir los datos de la excepcion
+  print("Message: %s" % exception.decode("utf-8"))
 ```
 
