@@ -1,3 +1,4 @@
+# coding=utf-8
 import zeep
 
 # Parametros para la conexión al Webservice
@@ -29,11 +30,11 @@ respuestas = {
 
 # Crear un cliente para hacer la petición al WS.
 cliente = zeep.Client(wsdl = wsdl_url)
-print(cliente)
+
 try:
   # Llamar el metodo procesar_respuesta
   respuesta = cliente.service.procesar_respuesta(usuario, contrasena, rfc_receptor, respuestas, file_cer_pem, file_key_pem)
   print(respuesta)
 except Exception as exception:
   # Imprimir los datos de la excepcion
-  print("Message: %s" % exception.decode("utf-8"))
+  print("Message: %s" % exception)

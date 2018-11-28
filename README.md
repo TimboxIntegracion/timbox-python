@@ -92,6 +92,7 @@ file_key_pem = open("CSD01_AAA010101AAA.key.pem", "r").read()
 ```
 Con la libreria de zeep crear un cliente y hacer el llamado al método cancelar_cfdi enviándole los parametros con la información necesaria:
 ```
+# coding=utf-8
 import zeep
 
 # Parametros para la conexión al Webservice
@@ -131,6 +132,7 @@ except Exception as exception:
 ## Consultar Estatus CFDI
 Para la consulta de estatus de CFDI solo es necesario generar la petición de consulta, Crear un cliente y hacer el llamado al método consultar_estatus enviándole los parametros con la información necesaria:
 ```
+# coding=utf-8
 import zeep
 
 # Parametros para la conexión al Webservice
@@ -165,6 +167,7 @@ file_key_pem = open("CSD01_AAA010101AAA.key.pem", "r").read()
 ```
 Con la libreria de zeep crear un cliente y hacer el llamado al método consultar_peticiones_pendientes enviándole los parametros con la información necesaria:
 ```
+# coding=utf-8
 import zeep
 
 # Parametros para la conexión al Webservice
@@ -198,6 +201,7 @@ file_key_pem = open("CSD01_AAA010101AAA.key.pem", "r").read()
 ```
 Con la libreria de zeep crear un cliente y hacer el llamado al método procesar_respuesta enviándole los parametros con la información necesaria:
 ```
+# coding=utf-8
 import zeep
 
 # Parametros para la conexión al Webservice
@@ -229,13 +233,46 @@ respuestas = {
 
 # Crear un cliente para hacer la petición al WS.
 cliente = zeep.Client(wsdl = wsdl_url)
-print(cliente)
+
 try:
   # Llamar el metodo procesar_respuesta
   respuesta = cliente.service.procesar_respuesta(usuario, contrasena, rfc_receptor, respuestas, file_cer_pem, file_key_pem)
   print(respuesta)
 except Exception as exception:
   # Imprimir los datos de la excepcion
-  print("Message: %s" % exception.decode("utf-8"))
+  print("Message: %s" % exception)
 ```
+## Consultar Documentos Relacionados
+Para realizar la petición de consulta de documentos relacionados son necesarios el certificado y llave, en formato pem que corresponde al receptor del comprobante:
+```
+file_cer_pem = open("CSD01_AAA010101AAA.cer.pem", "r").read()
+file_key_pem = open("CSD01_AAA010101AAA.key.pem", "r").read()
+```
+Con la libreria de zeep crear un cliente y hacer el llamado al método consultar_documento_relacionado enviándole los parametros con la información necesaria:
+```
+# coding=utf-8
+import zeep
 
+# Parametros para la conexión al Webservice
+wsdl_url = "https://staging.ws.timbox.com.mx/cancelacion/wsdl"
+usuario = "AAA010101000"
+contrasena = "h6584D56fVdBbSmmnB"
+
+# Parametros para la consulta de documentos relacionados
+rfc_receptor = "AAA010101AAA"
+uuid = "2636D0CC-EF64-43C1-A83E-EDAE28A08478"
+
+file_cer_pem = open("CSD01_AAA010101AAA.cer.pem", "r").read()
+file_key_pem = open("CSD01_AAA010101AAA.key.pem", "r").read()
+
+# Crear un cliente para hacer la petición al WS.
+cliente = zeep.Client(wsdl = wsdl_url)
+
+try:
+  # Llamar el metodo consultar_documento_relacionado
+  respuesta = cliente.service.consultar_documento_relacionado(usuario, contrasena, uuid, rfc_receptor, file_cer_pem, file_key_pem)
+  print(respuesta)
+except Exception as exception:
+  # Imprimir los datos de la excepcion
+  print("Message: %s" % exception)
+```
