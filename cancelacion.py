@@ -3,23 +3,28 @@ import zeep
 
 # Parametros para la conexión al Webservice
 wsdl_url = "https://staging.ws.timbox.com.mx/cancelacion/wsdl"
-usuario = "AAA010101000"
-contrasena = "h6584D56fVdBbSmmnB"
+
+usuario = ""
+contrasena = ""
 
 # Parametros para la cancelación del CFDI
 rfc_emisor   = "AAA010101AAA"
 rfc_receptor = "IAD121214B34"
 uuid = "66C2B0C5-B67C-4EF8-8D2E-E6625361B059"
 total = "7261.60"
+motivo = "03"
+folio_sustituto = ""
 
-file_cer_pem = open("CSD01_AAA010101AAA.cer.pem", "r").read()
-file_key_pem = open("CSD01_AAA010101AAA.key.pem", "r").read()
+file_cer_pem = open("./Certificados/EKU9003173C9.cer.pem", "r").read()
+file_key_pem = open("./Certificados/EKU9003173C9.key.pem", "r").read()
 
 folios = {
 "folio": {
 	"uuid" : uuid,
 	"rfc_receptor": rfc_receptor,
-	"total": total
+	"total": total,
+  "motivo": motivo,
+  "folio_sustituto" : folio_sustituto
 	}
 }
 

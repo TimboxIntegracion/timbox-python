@@ -7,9 +7,9 @@ usuario = "AAA010101000"
 contrasena = "h6584D56fVdBbSmmnB"
 
 # Parametros para la consulta de peticiones pendientes
-rfc_receptor = "AAA010101AAA"
-file_cer_pem = open("CSD01_AAA010101AAA.cer.pem", "r").read()
-file_key_pem = open("CSD01_AAA010101AAA.key.pem", "r").read()
+rfc_receptor = "EKU9003173C9"
+file_cer_pem = open("./Certificados/EKU9003173C9.cer.pem", "r").read()
+file_key_pem = open("./Certificados/EKU9003173C9.key.pem", "r").read()
 
 
 # Crear un cliente para hacer la petición al WS.

@@ -3,15 +3,15 @@ import zeep
 
 # Parametros para la conexión al Webservice
 wsdl_url = "https://staging.ws.timbox.com.mx/cancelacion/wsdl"
-usuario = "AAA010101000"
-contrasena = "h6584D56fVdBbSmmnB"
+usuario = ""
+contrasena = ""
 
 # Parametros para la consulta de documentos relacionados
 rfc_receptor = "AAA010101AAA"
 uuid = "2636D0CC-EF64-43C1-A83E-EDAE28A08478"
 
-file_cer_pem = open("CSD01_AAA010101AAA.cer.pem", "r").read()
-file_key_pem = open("CSD01_AAA010101AAA.key.pem", "r").read()
+file_cer_pem = open("./Certificados/EKU9003173C9.cer.pem", "r").read()
+file_key_pem = open("./Certificados/EKU9003173C9.key.pem", "r").read()
 
 # Crear un cliente para hacer la petición al WS.
 cliente = zeep.Client(wsdl = wsdl_url)

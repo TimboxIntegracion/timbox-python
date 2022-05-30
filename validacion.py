@@ -4,8 +4,8 @@ import base64
 
 # Parametros para la conexión al Webservice
 wsdl_url = "https://staging.ws.timbox.com.mx/valida_cfdi/wsdl"
-usuario = "AAA010101000"
-contrasena = "h6584D56fVdBbSmmnB"
+usuario = ""
+contrasena = ""
 
 # Parametros para la validacion de CFDI
 file_xml = open("ejemplo_cfdi_33.xml", "r").read()
