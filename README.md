@@ -3,11 +3,6 @@ Ejemplo con la integración al Webservice de Timbox
 
 Se deberá hacer uso de las URL que hacen referencia al WSDL, en cada petición realizada:
 
-Webservice de Timbrado 3.3 :
-- [Timbox Pruebas](https://staging.ws.timbox.com.mx/timbrado_cfdi33/wsdl)
-
-- [Timbox Producción](https://sistema.timbox.com.mx/timbrado_cfdi33/wsdl)
-
 Webservice de Timbrado 4.0 :
 - [Timbox Pruebas](https://staging.ws.timbox.com.mx/timbrado_cfdi40/wsdl)
 
@@ -54,40 +49,7 @@ Esto se logra mandando llamar el método de generar_sello:
 ```
 generar_sello(comprobante, path_llave, password_llave);
 ```
-### Timbrado 3.3
-Para hacer una petición de timbrado de un CFDI, deberá enviar las credenciales asignadas, asi como el xml que desea timbrar convertido a una cadena en base64:
-```
-# Parametros para conexion al Webservice (URL de Pruebas)
-wsdl_url = "https://staging.ws.timbox.com.mx/timbrado_cfdi33/wsdl"
-usuario = "usuario"
-contrasena = "contraseña"
-ruta_xml = "ejemplo_cfdi_33.xml"
 
-#Actualizar Sello
-actualizar_sello(ruta_xml)
-# Convertir la cadena del xml en base64
-documento_xml = open(ruta_xml, "rb").read()
-xml_base64 = base64.b64encode(documento_xml)
-
-# Crear un cliente para hacer la petición al WS.
-cliente = zeep.Client(wsdl = wsdl_url)
-
-try:
-  # llamar el metodo timbrar_cfdi
-  respuesta = cliente.service.timbrar_cfdi(usuario, contrasena, xml_base64).encode("utf-8")
-  print(respuesta)
-except Exception as exception:
-  # Imprimir los datos de la excepcion
-  print("Message: %s" % exception)
-```
-Con la libreria de zeep crear un cliente y hacer el llamado al método timbrar_cfdi enviándole los parametros con la información necesaria:
-
-```
-client = zeep.Client(wsdl=wsdl_url)
-
-# llamar el método timbrar
-response = client.service.timbrar_cfdi(wsdl_username, wsdl_password, xml_base64)
-```
 
 ### Timbrado 4.0
 Para hacer una petición de timbrado de un CFDI, deberá enviar las credenciales asignadas, asi como el xml que desea timbrar convertido a una cadena en base64:
